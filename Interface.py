@@ -97,6 +97,7 @@ class UploadPage(tk.Frame):
 class DownloadPage(tk.Frame):
     def refreshList(self):
         if not userInfo['pythonPath'] == None:
+            #along with the fileList one, this is probably not running on another person's computer
             for i in self.buttonList:
                 i.pack_forget()
             os.system(
@@ -139,6 +140,7 @@ class DownloadPage(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
         if not userInfo['pythonPath'] == None:
+            #this isn't running on other computers because there is no preexisting userInfo, so pythonPath assumed to be none unless specified. Make a default for this.
             os.system(
                 f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query")
             currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
