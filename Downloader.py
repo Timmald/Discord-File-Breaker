@@ -40,7 +40,6 @@ async def on_ready():
         async for message in botChannel.history(around=fileData[1]):
             if len(message.attachments)==1:
                 print("one attachment")
-                #TODO: Nothing gets past the next if statement
                 print(pieceNames)
                 print(message.attachments[0].filename)
                 if message.attachments[0].filename in pieceNames:

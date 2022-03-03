@@ -21,7 +21,6 @@ if not os.path.exists(f'/Users/{userName}/Library/Application Support/FileBreake
             "userName": userName,
             "botChannel": None
         }, json_file, indent=0)
-        #TODO: For testing purposes, change botchannel to the test server, and same with below
 elif not os.path.exists(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json'):
     with open(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json', 'w') as json_file:
         json.dump({
@@ -217,8 +216,3 @@ if __name__ == "__main__":
         with open(currentChoicesPath,'w') as json_file:
             json_file.write(txt.read())
     app.mainloop()
-
-# TODO: Make bot channel a variable from userInfo.json, make all filePaths revolve around userName, which I think is already happening.
-
-
-# TODO: Make pythonPath default to /usr/bin/python3.8 so most people won't have to find it, play with installcertificates.command,upload to github, maybe add search capabilities

@@ -30,19 +30,15 @@ async def on_message(message):
         with open('filePieces.json', 'r') as json_file:
             filePieces = json.load(json_file)
             fileList = filePieces[channelTranslator[message.channel.id]]
-            #TODO: This is returning an error for invalid index, which prevents the refresh from working
         if len(fileList) > 10:
             downloadable = fileList[len(fileList) - 10:]
         else:
             downloadable = fileList
         await message.channel.send(json.dumps(downloadable, indent=0).replace('\'', '\"'))
-        # TODO: Make the masterbot interperet the upload logs of uploader and update filePieces. ONLY MASTEROT can update filepieces
     elif message.channel in botChannels and message.author.id == 926615922909777980 and len(
             message.attachments) == 0 and message.content.startswith('successfully uploaded'):
         uploadData = message.content.split('successfully uploaded:')[1]
         uploadData = json.loads(uploadData)
-        # TODO: The loads is saying uploadData isn't a good string
-
         fileList[channelTranslator[message.channel.id]] += [uploadData]
         print("altered fileList")
         time.sleep(1)
