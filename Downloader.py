@@ -1,6 +1,8 @@
 import json
 import os
+import ssl
 
+from installCerts import installCerts
 import discord
 import sys
 from datetime import datetime, timezone
@@ -59,4 +61,8 @@ async def on_message(message):
         sys.exit()
 
 #TODO: put the below line in a try block, then except the ClientConnectorCertificateError and if you catch it run installCertificates.command and then run the bot
-client.run('OTI2NjE1OTIyOTA5Nzc3OTgw.Yc-QUw.AjoWXPgpw2HsrwEPTEaJcs2F8q8')
+try:
+    client.run('OTI2NjE1OTIyOTA5Nzc3OTgw.Yc-QUw.AjoWXPgpw2HsrwEPTEaJcs2F8q8')
+except ssl.SSLCertVerificationError:
+    os.system('/Applications/Python\ 3.8/Install\ Certificates.command')
+    sys.exit(4)

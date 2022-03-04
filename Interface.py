@@ -132,11 +132,15 @@ class DownloadPage(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
         if not userInfo['pythonPath'] == None:
-            os.system(
-                f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query")
-            currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
-            with open(currentChoicesPath, 'r') as json_file:
-                fileList = json.load(json_file)
+            if not os.system(
+                    f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4:
+                currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
+                with open(currentChoicesPath, 'r') as json_file:
+                    fileList = json.load(json_file)
+            else:
+                fileList = []
+                warning = Label(self, text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
+                warning.pack()
         self.buttonList = []
         for file in fileList:
             this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
