@@ -131,13 +131,13 @@ class DownloadPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
-        if not userInfo['pythonPath'] == None:
+        if not userInfo['pythonPath'] == None: #make this an and
             if not os.system(
-                    f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4:
+                    f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4: #if certificates are already installed
                 currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
                 with open(currentChoicesPath, 'r') as json_file:
                     fileList = json.load(json_file)
-            else:
+            else: #if certs aren't installed, the app isn't going to work
                 fileList = []
                 warning = Label(self, text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
                 warning.pack()
