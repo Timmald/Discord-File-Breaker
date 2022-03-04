@@ -1,8 +1,3 @@
-# this is going to be a discord bot
-# the on_ready function will have 2 parts
-# which thing it does is dependent on sys.argv[1]
-# option 1: query downloadable stuff and print it so that the interface can show it
-# option 2: search the channel history for the file with a given name (use timestamp to help), find all the pieces, then download all the pieces, then piece them together into the og file
 import json
 import os
 
