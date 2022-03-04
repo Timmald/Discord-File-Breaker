@@ -16,7 +16,7 @@ if not os.path.exists(f'/Users/{userName}/Library/Application Support/FileBreake
     os.mkdir(f'/Users/{userName}/Library/Application Support/FileBreakerApp')
     with open(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json', 'w') as json_file:
         json.dump({
-            "pythonPath": None,
+            "pythonPath": '/usr/bin/python3.8',
             "downloadsFolder": None,
             "userName": userName,
             "botChannel": None
@@ -24,7 +24,7 @@ if not os.path.exists(f'/Users/{userName}/Library/Application Support/FileBreake
 elif not os.path.exists(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json'):
     with open(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json', 'w') as json_file:
         json.dump({
-            "pythonPath": None,
+            "pythonPath": '/usr/bin/python3.8',
             "downloadsFolder": None,
             "userName": userName,
             "botChannel": None
