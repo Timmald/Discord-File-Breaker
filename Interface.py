@@ -94,7 +94,6 @@ class UploadPage(tk.Frame):
 class DownloadPage(tk.Frame):
     def refreshList(self):
         if not userInfo['pythonPath'] == None:
-            #along with the fileList one, this is probably not running on another person's computer
             for i in self.buttonList:
                 i.pack_forget()
             os.system(
@@ -119,7 +118,6 @@ class DownloadPage(tk.Frame):
             filePieces = os.listdir(f'{userInfo["downloadsFolder"]}/Discord File Pieces')
             filePieces.sort()
             realFileName = filePieces[0][:filePieces[0].index('_piece')]
-            # It stems from the same big issue, that it won't recognize python3.9. This means that the download doesn't happen. If the download doesn't happen, there won't be any files
             fileBytes = b''
             for piece in filePieces:
                 with open(f'{userInfo["downloadsFolder"]}/Discord File Pieces/{piece}', 'rb') as txt:
@@ -134,7 +132,6 @@ class DownloadPage(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
         if not userInfo['pythonPath'] == None:
-            #this isn't running on other computers because there is no preexisting userInfo, so pythonPath assumed to be none unless specified. Make a default for this.
             os.system(
                 f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query")
             currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
