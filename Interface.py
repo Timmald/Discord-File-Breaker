@@ -62,9 +62,6 @@ class App(tk.Tk):
 
 
 class StartPage(tk.Frame):
-    def refreshDownloads(self):
-        # self.controller.frames["DownloadPage"] = DownloadPage(parent=self.controller.container, controller=self.controller)
-        pass
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -131,9 +128,6 @@ class DownloadPage(tk.Frame):
                               f'/Users/{userInfo["userName"]}/.Trash/{piece}')
             with open(f'{userInfo["downloadsFolder"]}/{realFileName}', 'wb') as writer:
                 writer.write(fileBytes)
-        # trimmedName=fileName[:fileName.index(";")-1]
-        # pieceNames=[f'{trimmedName} piece {i}.txt'.replace(' ','_') for i in range(1,pieceNum+1)]
-        # for name in pieceNames:
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -214,7 +208,7 @@ class SettingsPage(tk.Frame):
 if __name__ == "__main__":
     app = App()
     currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
-    with open( resource_path('currentChoices.json'),'r') as txt:
-        with open(currentChoicesPath,'w') as json_file:
+    with open(resource_path('currentChoices.json'), 'r') as txt:
+        with open(currentChoicesPath, 'w') as json_file:
             json_file.write(txt.read())
     app.mainloop()
