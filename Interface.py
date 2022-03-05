@@ -1,43 +1,16 @@
 import json
 import os
 import tkinter as tk
+from pathlib import Path
 from tkinter import filedialog
 from tkinter import *
 import sys
+import shutil
 
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     return os.path.join(os.path.dirname(sys.argv[0]), relative_path)
-
-
-userName = os.path.normpath(sys.argv[0]).split(os.path.sep)[2]
-if not os.path.exists(f'/Users/{userName}/Library/Application Support/FileBreakerApp'):
-    os.mkdir(f'/Users/{userName}/Library/Application Support/FileBreakerApp')
-    with open(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json', 'w') as json_file:
-        json.dump({
-            "pythonPath": '/usr/bin/python3.8',
-            "downloadsFolder": None,
-            "userName": userName,
-            "botChannel": None
-        }, json_file, indent=0)
-elif not os.path.exists(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json'):
-    with open(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json', 'w') as json_file:
-        json.dump({
-            "pythonPath": '/usr/bin/python3.8',
-            "downloadsFolder": None,
-            "userName": userName,
-            "botChannel": None
-        }, json_file, indent=0)
-with open(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json', 'r') as json_file:
-    userInfo = json.load(json_file)
-
-
-def getFile():
-    filename = filedialog.askopenfilename(title="Select file to upload:")
-    goodFilePath = filename.replace(' ', '\ ')
-    os.system(
-        f"{userInfo['pythonPath']} {resource_path('Uploader.py')} {goodFilePath}")
 
 
 class App(tk.Tk):
@@ -80,11 +53,18 @@ class StartPage(tk.Frame):
 
 
 class UploadPage(tk.Frame):
+    @staticmethod
+    def uploadFile():
+        filename = filedialog.askopenfilename(title="Select file to upload:")
+        goodFilePath = filename.replace(' ', '\ ')
+        os.system(
+            f"{userInfo['pythonPath']} {resource_path('Uploader.py')} {goodFilePath}")
+
     def __init__(self, parent, controller):
         tk, Frame.__init__(self, parent)
         self.controller = controller
         upload_label = Label(self, text='Select file to upload:')
-        upload_button = Button(self, text="Upload", command=getFile)
+        upload_button = Button(self, text="Upload", command=self.uploadFile)
         back_button = Button(self, text="<-", command=lambda: controller.show_frame("StartPage"))
         back_button.pack()
         upload_label.pack()
@@ -93,58 +73,54 @@ class UploadPage(tk.Frame):
 
 class DownloadPage(tk.Frame):
     def refreshList(self):
-        if not userInfo['pythonPath'] == None:
-            for i in self.buttonList:
-                i.pack_forget()
-            os.system(
-                f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query")
-            currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
-            with open(currentChoicesPath, 'r') as json_file:
-                fileList = json.load(json_file)
-            self.buttonList = []
-            for file in fileList:
-                this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
-                self.buttonList += [this_button]
-            for button in self.buttonList:
-                button.pack()
+        for i in self.buttonList:
+            i.pack_forget()
+        os.system(
+            f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query")
+        with open(currentChoicesPath, 'r') as json_file:
+            fileList = json.load(json_file)
+        self.buttonList = []
+        for file in fileList:
+            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
+            self.buttonList += [this_button]
+        for button in self.buttonList:
+            button.pack()
 
     def downloadFile(self, fileName: str, pieceNum):
-        if not userInfo['pythonPath'] is None or not userInfo['downloadsFolder'] is None or not userInfo[
-                                                                                                    'userName'] is None:
-            os.system(
-                f"{userInfo['pythonPath']} {resource_path('Downloader.py')} \"download\" \"{fileName.replace(' ', '_')}\" \"{pieceNum}\"")
-            if not os.path.exists(f'{userInfo["downloadsFolder"]}/Discord File Pieces'):
-                os.mkdir(f'{userInfo["downloadsFolder"]}/Discord File Pieces')
-            filePieces = os.listdir(f'{userInfo["downloadsFolder"]}/Discord File Pieces')
-            filePieces.sort()
-            realFileName = filePieces[0][:filePieces[0].index('_piece')]
-            fileBytes = b''
-            for piece in filePieces:
-                with open(f'{userInfo["downloadsFolder"]}/Discord File Pieces/{piece}', 'rb') as txt:
-                    fileBytes += txt.read()
-                    os.rename(f'{userInfo["downloadsFolder"]}/Discord File Pieces/{piece}',
-                              f'/Users/{userInfo["userName"]}/.Trash/{piece}')
-            with open(f'{userInfo["downloadsFolder"]}/{realFileName}', 'wb') as writer:
-                writer.write(fileBytes)
+        os.system(
+            f"{userInfo['pythonPath']} {resource_path('Downloader.py')} \"download\" \"{fileName.replace(' ', '_')}\" \"{pieceNum}\"")
+        filePieceFolderPath = f'{userInfo["downloadsFolder"]}/Discord File Pieces'
+        if not os.path.exists(filePieceFolderPath):
+            os.mkdir(filePieceFolderPath)
+        filePieces = os.listdir(filePieceFolderPath)
+        filePieces.sort()
+        realFileName = filePieces[0][:filePieces[0].index('_piece')]
+        fileBytes = b''
+        for piece in filePieces:
+            piecePath = f'{filePieceFolderPath}/{piece}'
+            with open(piecePath, 'rb') as txt:
+                fileBytes += txt.read()
+                os.rename(piecePath,
+                          f'{homeDir}/.Trash/{piece}')
+        with open(f'{userInfo["downloadsFolder"]}/{realFileName}', 'wb') as writer:
+            writer.write(fileBytes)
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
-        if not userInfo['pythonPath'] == None: #make this an and
-            if not os.system(
-                    f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4: #if certificates are already installed
-                currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
-                with open(currentChoicesPath, 'r') as json_file:
-                    fileList = json.load(json_file)
-            else: #if certs aren't installed, the app isn't going to work
-                fileList = []
-                warning = Label(self, text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
-                warning.pack()
+        if not os.system(f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4:  # if certificates are already installed
+            with open(currentChoicesPath, 'r') as json_file:
+                fileList = json.load(json_file)
+        else:  # if certs aren't installed, the app isn't going to work
+            fileList = []
+            warning = Label(self,
+                            text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
+            warning.pack()
         self.buttonList = []
         for file in fileList:
             this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
-            self.buttonList += [this_button]
+            self.buttonList.append(this_button)
         label.pack(side="top", fill="x", pady=10)
         for button in self.buttonList:
             button.pack()
@@ -164,25 +140,22 @@ class AboutPage(tk.Frame):
 
 
 class SettingsPage(tk.Frame):
-    def get_filename(self):
+    @staticmethod
+    def get_filename():
         filename = filedialog.askopenfilename(title="Select file:")
-        if filename == '':
-            userInfo['pythonPath'] = '/usr/bin/python3.8'
-        else:
+        if not filename == '':
             userInfo['pythonPath'] = filename
 
-    def submit(self, botChannel, userInfo):
+    @staticmethod
+    def submit(botChannel):
         userInfo["botChannel"] = botChannel
-        userInfo["downloadsFolder"] = f'/Users/{userName}/Downloads'
-        userInfo["userName"] = userName
-        with open(f'/Users/{userName}/Library/Application Support/FileBreakerApp/userInfo.json', 'w') as json_file:
+        with open(userInfoPath, 'w') as json_file:
             json.dump(userInfo, json_file, indent=0)
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
 
-        userInfo = {}
         explanation = Label(self,
                             text="You only need this page once, to be used before you use the main app for the first time. Quit and reopen the app after you submit")
         pyLabel = Label(self,
@@ -195,7 +168,7 @@ class SettingsPage(tk.Frame):
             channelID = int(botChannel.get("1.0", "end-1c"))
         except ValueError:
             channelID = 746803793408163898
-        submit = Button(self, text="Submit", command=lambda: self.submit(channelID, userInfo))
+        submit = Button(self, text="Submit", command=lambda: self.submit(channelID))
         back_button = Button(self, text="<-", command=lambda: controller.show_frame("StartPage"))
         back_button.pack()
         explanation.pack()
@@ -207,9 +180,27 @@ class SettingsPage(tk.Frame):
 
 
 if __name__ == "__main__":
+    homeDir = str(Path.home())  # homeDir, for example, is /Users/nathanwolf
+    AppSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
+    userInfoPath = f'{AppSupportFolder}/userInfo.json'
+    currentChoicesPath = f'{AppSupportFolder}/currentChoices.json'
+    isFirstTime = not os.path.exists(AppSupportFolder)
+    if isFirstTime:
+        os.mkdir(AppSupportFolder)  # folder is made
+        shutil.copyfile(resource_path('currentChoices.json'),
+                        f'{AppSupportFolder}/currentChoices.json')  # currentChoices is in folder
+        with open(f'{AppSupportFolder}/userInfo.json', 'w') as info_writer:
+            userInfo = {
+                "pythonPath": '/usr/bin/python3.8',
+                "downloadsFolder": f'{homeDir}/Downloads',
+                "botChannel": 939234547906777139
+            }
+            json.dump(userInfo, info_writer, indent=0)
+            # dump all the default values for stuff into the userInfo.json
+
+            # just a fun note, once u eliminate all the os.systems, the userInfo can just be a variable in one file that gets imported
+    else:
+        with open(f'{AppSupportFolder}/userInfo.json','r') as info_reader:
+            userInfo = json.load(info_reader)
     app = App()
-    currentChoicesPath = f'/Users/{userName}/Library/Application Support/FileBreakerApp/currentChoices.json'
-    with open(resource_path('currentChoices.json'), 'r') as txt:
-        with open(currentChoicesPath, 'w') as json_file:
-            json_file.write(txt.read())
     app.mainloop()
