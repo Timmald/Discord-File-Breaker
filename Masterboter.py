@@ -29,17 +29,18 @@ async def on_message(message):
     if message.channel in botChannels and message.author.bot and message.content.startswith('$downloadList'):
         with open('filePieces.json', 'r') as json_file:
             filePieces = json.load(json_file)
-            fileList = filePieces[channelTranslator[message.channel.id]]
+            DownloadList = filePieces[channelTranslator[message.channel.id]]
         if len(fileList) > 10:
-            downloadable = fileList[len(fileList) - 10:]
+            downloadable = DownloadList[len(DownloadList) - 10:]
         else:
-            downloadable = fileList
+            downloadable = DownloadList
         await message.channel.send(json.dumps(downloadable, indent=0).replace('\'', '\"'))
     elif message.channel in botChannels and message.author.id == 926615922909777980 and len(
             message.attachments) == 0 and message.content.startswith('successfully uploaded'):
         uploadData = message.content.split('successfully uploaded:')[1]
         uploadData = json.loads(uploadData)
         fileList[channelTranslator[message.channel.id]] += [uploadData]
+        #fileList is sometimes a list and sometimes dict, when it's a list it errors on above line. What's happening is that there is more than one var named fileList
         print("altered fileList")
         time.sleep(1)
         print("naptime!")
