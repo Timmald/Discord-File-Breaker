@@ -1,13 +1,8 @@
-import json
 import os
-from pathlib import Path
-from ssl import SSLCertVerificationError
 import discord
-import sys
-from datetime import datetime, timezone
-
+from datetime import datetime
 import GlobalVars
-from GlobalVars import currentChoicesPath, botChannelID, fileList, downloadsFolder, homeDir
+from GlobalVars import *
 
 
 async def query():

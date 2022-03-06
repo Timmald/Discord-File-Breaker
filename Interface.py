@@ -1,21 +1,19 @@
 import asyncio as aio
-import json
 import os
-import tkinter as tk
 from shutil import copyfile
 from ssl import SSLCertVerificationError
 from tkinter import *
-from tkinter import filedialog
+from tkinter.filedialog import askopenfilename
 import GlobalVars  # So I can modify globals
 from Downloader import query, download
-from GlobalVars import currentChoicesPath, fileList, appSupportFolder, userInfoPath  # So I can use globals
+from GlobalVars import *  # So I can use globals
 from Uploader import uploader
 
 
-class App(tk.Tk):
+class App(Tk):
     def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        self.container = tk.Frame(self)
+        Tk.__init__(self, *args, **kwargs)
+        self.container = Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
@@ -33,13 +31,13 @@ class App(tk.Tk):
         frame.tkraise()
 
 
-class StartPage(tk.Frame):
+class StartPage(Frame):
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        Frame.__init__(self, parent)
         self.controller = controller
-        uPage = tk.Button(self, text="Upload Stuff", command=lambda: controller.show_frame("UploadPage"))
-        dPage = tk.Button(self, text="Download Stuff", command=lambda: controller.show_frame("DownloadPage"))
+        uPage = Button(self, text="Upload Stuff", command=lambda: controller.show_frame("UploadPage"))
+        dPage = Button(self, text="Download Stuff", command=lambda: controller.show_frame("DownloadPage"))
         refresh = Button(self, text="Refresh Downloads List",
                          command=lambda: self.controller.frames["DownloadPage"].refreshList())
         settings = Button(self, text="Settings", command=lambda: controller.show_frame("SettingsPage"))
@@ -51,14 +49,14 @@ class StartPage(tk.Frame):
         settings.pack()
 
 
-class UploadPage(tk.Frame):
+class UploadPage(Frame):
     @staticmethod
     def uploadFile():
-        filename = filedialog.askopenfilename(title="Select file to upload:")
+        filename = askopenfilename(title="Select file to upload:")
         aio.run(uploader(filename))
 
     def __init__(self, parent, controller):
-        tk, Frame.__init__(self, parent)
+        Frame.__init__(self, parent)
         self.controller = controller
         upload_label = Label(self, text='Select file to upload:')
         upload_button = Button(self, text="Upload", command=self.uploadFile)
@@ -68,7 +66,7 @@ class UploadPage(tk.Frame):
         upload_button.pack()
 
 
-class DownloadPage(tk.Frame):
+class DownloadPage(Frame):
     def refreshList(self):
         for i in self.buttonList:
             i.pack_forget()
@@ -85,9 +83,9 @@ class DownloadPage(tk.Frame):
         aio.run(download(fileName.replace(" ", "_"), pieceNum))
 
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="Here's what you can download")
+        label = Label(self, text="Here's what you can download")
         try:
             aio.run(query())
         except SSLCertVerificationError:
@@ -109,7 +107,7 @@ class DownloadPage(tk.Frame):
         back_button.pack()
 
 
-class AboutPage(tk.Frame):
+class AboutPage(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
@@ -120,7 +118,7 @@ class AboutPage(tk.Frame):
         aboutText.pack()
 
 
-class SettingsPage(tk.Frame):
+class SettingsPage(Frame):
     @staticmethod
     def submit(newBotChannel):
         channelID = int(newBotChannel.get("1.0", "end-1c"))
