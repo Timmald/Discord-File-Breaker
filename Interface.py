@@ -1,7 +1,5 @@
 import asyncio as aio
 import os
-from shutil import copyfile
-from ssl import SSLCertVerificationError
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 import GlobalVars  # So I can modify globals
@@ -86,16 +84,7 @@ class DownloadPage(Frame):
         Frame.__init__(self, parent)
         self.controller = controller
         label = Label(self, text="Here's what you can download")
-        try:
-            aio.run(query())
-        except SSLCertVerificationError:
-            GlobalVars.fileList = []
-            warning = Label(self,
-                            text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
-            warning.pack()
-            popUp = Toplevel(self)
-            Label(popUp,
-                  text='CLOSE APP NOW. It isn\'t serious, but you need to restart the app for it to work.').pack()
+        aio.run(query())
         self.buttonList = []
         for file in fileList:
             this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
@@ -146,8 +135,10 @@ if __name__ == "__main__":
     if isFirstTime:
         os.mkdir(appSupportFolder)  # folder is made
         internalCurrentChoices = os.path.join(os.path.dirname(sys.argv[0]), 'currentChoices.json')
-        copyfile(internalCurrentChoices,
-                 currentChoicesPath)  # currentChoices is in folder
+        with open(internalCurrentChoices,'r') as choices_reader:
+            choices = choices_reader.read()
+        with open(currentChoicesPath,'w') as choices_writer:
+            choices_writer.write(choices)
         userInfo = {
             "botChannel": 939234547906777139
         }
@@ -155,9 +146,11 @@ if __name__ == "__main__":
         with open(userInfoPath, 'w') as info_writer:
             json.dump(userInfo, info_writer, indent=0)
         os.mkdir(f'{appSupportFolder}/filePieces')
+        os.system("\"/Applications/Python 3.8/Install Certificates.command\"")
+        sys.exit()
     else:
         with open(userInfoPath, 'r') as info_reader:
             userInfo = json.load(info_reader)
         GlobalVars.botChannelID = userInfo["botChannel"]
-    app = App()
-    app.mainloop()
+        app = App()
+        app.mainloop()

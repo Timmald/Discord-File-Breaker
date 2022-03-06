@@ -29,7 +29,7 @@ async def on_message(message):
         with open('filePieces.json', 'r') as json_file:
             filePieces = json.load(json_file)
             DownloadList = filePieces[channelTranslator[message.channel.id]]
-        if len(fileList) > 10:
+        if len(DownloadList) > 10:
             downloadable = DownloadList[len(DownloadList) - 10:]
         else:
             downloadable = DownloadList

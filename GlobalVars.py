@@ -6,6 +6,9 @@ appSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
 currentChoicesPath = f'{appSupportFolder}/currentChoices.json'
 userInfoPath = f'{appSupportFolder}/userInfo.json'
 botChannelID = 939234547906777139
-with open(currentChoicesPath, 'r') as json_file:
-    fileList = json.load(json_file)
+try:
+    with open(currentChoicesPath, 'r') as json_file:
+        fileList = json.load(json_file)
+except FileNotFoundError:
+    pass
 downloadsFolder = f'{homeDir}/Downloads'
