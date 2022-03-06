@@ -118,6 +118,8 @@ class DownloadPage(tk.Frame):
             warning = Label(self,
                             text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
             warning.pack()
+            popUp = Toplevel(self)
+            Label(popUp,text='CLOSE APP NOW. It isn\'t serious, but you need to restart the app for it to work.').pack()
         self.buttonList = []
         for file in fileList:
             this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
