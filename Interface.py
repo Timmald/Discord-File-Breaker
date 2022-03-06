@@ -6,6 +6,10 @@ from tkinter import filedialog
 from tkinter import *
 import sys
 from shutil import copyfile
+from Downloader import query, download
+from Uploader import uploader
+from ssl import SSLCertVerificationError
+import asyncio as aio
 
 
 def resource_path(relative_path):
@@ -56,9 +60,9 @@ class UploadPage(tk.Frame):
     @staticmethod
     def uploadFile():
         filename = filedialog.askopenfilename(title="Select file to upload:")
-        goodFilePath = filename.replace(' ', '\ ')
-        os.system(
-            f"{userInfo['pythonPath']} {resource_path('Uploader.py')} {goodFilePath}")
+        loop = aio.new_event_loop()
+        loop.run_until_complete(uploader(filename))
+        loop.close()
 
     def __init__(self, parent, controller):
         tk, Frame.__init__(self, parent)
@@ -75,8 +79,9 @@ class DownloadPage(tk.Frame):
     def refreshList(self):
         for i in self.buttonList:
             i.pack_forget()
-        os.system(
-            f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query")
+        loop = aio.new_event_loop()
+        loop.run_until_complete(query())
+        loop.close()
         with open(currentChoicesPath, 'r') as json_file:
             fileList = json.load(json_file)
         self.buttonList = []
@@ -86,12 +91,12 @@ class DownloadPage(tk.Frame):
         for button in self.buttonList:
             button.pack()
 
-    def downloadFile(self, fileName: str, pieceNum):
-        os.system(
-            f"{userInfo['pythonPath']} {resource_path('Downloader.py')} \"download\" \"{fileName.replace(' ', '_')}\" \"{pieceNum}\"")
+    @staticmethod
+    def downloadFile(fileName: str, pieceNum):
+        loop = aio.new_event_loop()
+        loop.run_until_complete(download(fileName.replace(" ", "_"), pieceNum))
+        loop.close()
         filePieceFolderPath = f'{userInfo["downloadsFolder"]}/Discord File Pieces'
-        if not os.path.exists(filePieceFolderPath):
-            os.mkdir(filePieceFolderPath)
         filePieces = os.listdir(filePieceFolderPath)
         filePieces.sort()
         realFileName = filePieces[0][:filePieces[0].index('_piece')]
@@ -109,17 +114,20 @@ class DownloadPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
-        if not os.system(
-                f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4:  # if certificates are already installed
-            with open(currentChoicesPath, 'r') as json_file:
-                fileList = json.load(json_file)
-        else:  # if certs aren't installed, the app isn't going to work
+        try:
+            loop = aio.new_event_loop()
+            loop.run_until_complete(query())
+            loop.close()
+            with open('currentChoices.json', 'r') as choices_reader:
+                fileList = json.load(choices_reader)
+        except SSLCertVerificationError:
             fileList = []
             warning = Label(self,
                             text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
             warning.pack()
             popUp = Toplevel(self)
-            Label(popUp,text='CLOSE APP NOW. It isn\'t serious, but you need to restart the app for it to work.').pack()
+            Label(popUp,
+                  text='CLOSE APP NOW. It isn\'t serious, but you need to restart the app for it to work.').pack()
         self.buttonList = []
         for file in fileList:
             this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
