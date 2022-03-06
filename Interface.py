@@ -1,20 +1,15 @@
+import asyncio as aio
 import json
 import os
 import tkinter as tk
-from pathlib import Path
-from tkinter import filedialog
-from tkinter import *
-import sys
 from shutil import copyfile
-from Downloader import query, download
-from Uploader import uploader
 from ssl import SSLCertVerificationError
-import asyncio as aio
-
-
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    return os.path.join(os.path.dirname(sys.argv[0]), relative_path)
+from tkinter import *
+from tkinter import filedialog
+import GlobalVars  # So I can modify globals
+from Downloader import query, download
+from GlobalVars import currentChoicesPath, fileList, appSupportFolder, userInfoPath  # So I can use globals
+from Uploader import uploader
 
 
 class App(tk.Tk):
@@ -78,10 +73,8 @@ class DownloadPage(tk.Frame):
         for i in self.buttonList:
             i.pack_forget()
         aio.run(query())
-        with open(currentChoicesPath, 'r') as json_file:
-            fileList = json.load(json_file)
         self.buttonList = []
-        for file in fileList:
+        for file in GlobalVars.fileList:
             this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
             self.buttonList += [this_button]
         for button in self.buttonList:
@@ -90,19 +83,6 @@ class DownloadPage(tk.Frame):
     @staticmethod
     def downloadFile(fileName: str, pieceNum):
         aio.run(download(fileName.replace(" ", "_"), pieceNum))
-        filePieceFolderPath = f'{userInfo["downloadsFolder"]}/Discord File Pieces'
-        filePieces = os.listdir(filePieceFolderPath)
-        filePieces.sort()
-        realFileName = filePieces[0][:filePieces[0].index('_piece')]
-        fileBytes = b''
-        for piece in filePieces:
-            piecePath = f'{filePieceFolderPath}/{piece}'
-            with open(piecePath, 'rb') as txt:
-                fileBytes += txt.read()
-                os.rename(piecePath,
-                          f'{homeDir}/.Trash/{piece}')
-        with open(f'{userInfo["downloadsFolder"]}/{realFileName}', 'wb') as writer:
-            writer.write(fileBytes)
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -110,10 +90,8 @@ class DownloadPage(tk.Frame):
         label = tk.Label(self, text="Here's what you can download")
         try:
             aio.run(query())
-            with open('currentChoices.json', 'r') as choices_reader:
-                fileList = json.load(choices_reader)
         except SSLCertVerificationError:
-            fileList = []
+            GlobalVars.fileList = []
             warning = Label(self,
                             text="QUIT AND RELAUNCH THE APP BEFORE DOING ANYTHING ELSE. It isn't bad for your computer or anything, but the app won't work until you reopen.")
             warning.pack()
@@ -144,73 +122,44 @@ class AboutPage(tk.Frame):
 
 class SettingsPage(tk.Frame):
     @staticmethod
-    def get_filename():
-        filename = filedialog.askopenfilename(title="Select file:")
-        if not filename == '':
-            userInfo['pythonPath'] = filename
-
-    @staticmethod
-    def submit(botChannel):
-        userInfo["botChannel"] = botChannel
+    def submit(newBotChannel):
+        channelID = int(newBotChannel.get("1.0", "end-1c"))
+        userInfo["botChannel"] = channelID
         with open(userInfoPath, 'w') as json_file:
             json.dump(userInfo, json_file, indent=0)
+        GlobalVars.botChannelID = channelID
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
-
-        explanation = Label(self,
-                            text="You only need this page once, to be used before you use the main app for the first time. Quit and reopen the app after you submit")
-        pyLabel = Label(self,
-                        text="Find where your version of python3.9 is located.\nIf you don't know how to find it, go to top menu of finder -> go -> go to folder and then enter /usr\n It is most likely either in /usr/local/bin or /usr/bin\n just look for a file literally called python3.9\nAnd get Nathan to send it to you and put it in /usr/bin if you don't have it, but you still have to enter that here\n if you only have 3.8, use that and nothing should go wrong")
-        pyPathButton = Button(self, text="Find python3.9", command=lambda: self.get_filename())
         channelIDLabel = Label(self,
                                text="If you're not on Nick's server, enter the channel ID of the bot channel here. Otherwise, leave blank\n(click below to type)")
         botChannel = Text(self, height=1, borderwidth=1)
-        try:
-            channelID = int(botChannel.get("1.0", "end-1c"))
-        except ValueError:
-            channelID = 746803793408163898
-        submit = Button(self, text="Submit", command=lambda: self.submit(channelID))
+        submit = Button(self, text="Submit", command=lambda: self.submit(botChannel))
         back_button = Button(self, text="<-", command=lambda: controller.show_frame("StartPage"))
         back_button.pack()
-        explanation.pack()
-        pyLabel.pack()
-        pyPathButton.pack()
         channelIDLabel.pack()
         botChannel.pack()
         submit.pack()
 
 
 if __name__ == "__main__":
-    homeDir = str(Path.home())  # homeDir, for example, is /Users/nathanwolf
-    AppSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
-    userInfoPath = f'{AppSupportFolder}/userInfo.json'
-    currentChoicesPath = f'{AppSupportFolder}/currentChoices.json'
-    isFirstTime = not os.path.exists(AppSupportFolder)
+    isFirstTime = not os.path.exists(appSupportFolder)
     if isFirstTime:
-        os.mkdir(AppSupportFolder)  # folder is made
-        copyfile(resource_path('currentChoices.json'),
-                 f'{AppSupportFolder}/currentChoices.json')  # currentChoices is in folder
-        with open(f'{AppSupportFolder}/userInfo.json', 'w') as info_writer:
-            if homeDir == '/Users/nathanwolf':
-                userInfo = {
-                    "pythonPath": '/usr/local/bin/python3.8',
-                    "downloadsFolder": f'{homeDir}/Downloads',
-                    "botChannel": 939234547906777139
-                }
-            else:
-                userInfo = {
-                    "pythonPath": '/usr/bin/python3.8',
-                    "downloadsFolder": f'{homeDir}/Downloads',
-                    "botChannel": 939234547906777139
-                }
+        os.mkdir(appSupportFolder)  # folder is made
+        internalCurrentChoices = os.path.join(os.path.dirname(sys.argv[0]), 'currentChoices.json')
+        copyfile(internalCurrentChoices,
+                 currentChoicesPath)  # currentChoices is in folder
+        userInfo = {
+            "botChannel": 939234547906777139
+        }
+        GlobalVars.botChannelID = userInfo["botChannel"]
+        with open(userInfoPath, 'w') as info_writer:
             json.dump(userInfo, info_writer, indent=0)
-        # dump all the default values for stuff into the userInfo.json
-        # just a fun note, once u eliminate all the os.systems, the userInfo can just be a variable in one file that gets imported
-        os.mkdir(f'{AppSupportFolder}/filePieces')
+        os.mkdir(f'{appSupportFolder}/filePieces')
     else:
-        with open(f'{AppSupportFolder}/userInfo.json', 'r') as info_reader:
+        with open(userInfoPath, 'r') as info_reader:
             userInfo = json.load(info_reader)
+        GlobalVars.botChannelID = userInfo["botChannel"]
     app = App()
     app.mainloop()

@@ -1,5 +1,4 @@
 import time
-
 import discord
 import json
 
@@ -39,7 +38,7 @@ async def on_message(message):
             message.attachments) == 0 and message.content.startswith('successfully uploaded'):
         uploadData = message.content.split('successfully uploaded:')[1]
         uploadData = json.loads(uploadData)
-        fileList[channelTranslator[message.channel.id]] += [uploadData]
+        fileList[channelTranslator[message.channel.id]].append(uploadData)
         print("altered fileList")
         time.sleep(1)
         print("naptime!")

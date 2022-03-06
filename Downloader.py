@@ -6,26 +6,27 @@ import discord
 import sys
 from datetime import datetime, timezone
 
+import GlobalVars
+from GlobalVars import currentChoicesPath, botChannelID, fileList, downloadsFolder, homeDir
+
 
 async def query():
     client = discord.Client()
-    homeDir = str(Path.home())
-    appSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
-    with open(f'{appSupportFolder}/userInfo.json', 'r') as json_file:
-        userInfo = json.load(json_file)
+    masterID = 937444289208778782
 
     @client.event
     async def on_ready():
-        botChannel = await client.fetch_channel(userInfo["botChannel"])
+        botChannel = await client.fetch_channel(botChannelID)
         await botChannel.send('$downloadList')
 
     @client.event
     async def on_message(message):
-        if message.author.id == 937444289208778782:
+        isMaster = message.author.id == masterID
+        if isMaster:  # then it must be the downloadList
             downloadChoices = message.content
-            currentChoicesPath = f'{appSupportFolder}/currentChoices.json'
+            GlobalVars.fileList = json.loads(downloadChoices)
             with open(currentChoicesPath, 'w') as json_file:
-                json.dump(json.loads(downloadChoices), json_file, indent=0)
+                json.dump(fileList, json_file, indent=0)
             await client.close()
 
     await client.start('OTI2NjE1OTIyOTA5Nzc3OTgw.Yc-QUw.AjoWXPgpw2HsrwEPTEaJcs2F8q8')
@@ -34,36 +35,36 @@ async def query():
 
 async def download(fileName, pieceNum):
     client = discord.Client()
-    homeDir = str(Path.home())
-    downloads = f'{homeDir}/Downloads'
-    appSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
-    with open(f'{appSupportFolder}/userInfo.json', 'r') as json_file:
-        userInfo = json.load(json_file)
+    filePieceFolder = f'{downloadsFolder}/Discord File Pieces'
 
     @client.event
     async def on_ready():
         print('yo')
-        botChannel = await client.fetch_channel(userInfo["botChannel"])
+        botChannel = await client.fetch_channel(botChannelID)
         fileData = fileName.split(';_Uploaded_at_')
         fileData[1] = datetime.strptime(fileData[1].replace('_', ' '), '%c')
         pieceNames = [f'{fileData[0]} piece {i}.txt'.replace(' ', '_') for i in range(1, pieceNum + 1)]
         # oh how I wish we could stick to underscores
-        print(f'now is {datetime.now().strftime("%c")} in UTC')
-        print(f'code thinks it is {fileData[1].strftime("%c")}')
         async for message in botChannel.history(around=fileData[1]):
             if len(message.attachments) == 1:
-                print("one attachment")
-                print(pieceNames)
-                print(message.attachments[0].filename)
                 if message.attachments[0].filename in pieceNames:
-                    print("has a target name")
-                    if not os.path.exists(f'{downloads}/Discord File Pieces'):
-                        print("making directory")
-                        os.mkdir(f'{downloads}/Discord File Pieces')
+                    if not os.path.exists(filePieceFolder):
+                        os.mkdir(filePieceFolder)
                     await message.attachments[0].save(
-                        f'{downloads}/Discord File Pieces/{message.attachments[0].filename}')
-                    print(f'saved {message.attachments[0].filename}')
+                        f'{filePieceFolder}/{message.attachments[0].filename}')
         await client.close()
 
     await client.start('OTI2NjE1OTIyOTA5Nzc3OTgw.Yc-QUw.AjoWXPgpw2HsrwEPTEaJcs2F8q8')
+    filePieces = os.listdir(filePieceFolder)
+    filePieces.sort()
+    realFileName = filePieces[0][:filePieces[0].index('_piece')]
+    fileBytes = b''
+    for piece in filePieces:
+        piecePath = f'{filePieceFolder}/{piece}'
+        with open(piecePath, 'rb') as txt:
+            fileBytes += txt.read()
+            os.rename(piecePath,
+                      f'{homeDir}/.Trash/{piece}')
+    with open(f'{downloadsFolder}/{realFileName}', 'wb') as writer:
+        writer.write(fileBytes)
     return
