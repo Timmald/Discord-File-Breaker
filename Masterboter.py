@@ -40,7 +40,6 @@ async def on_message(message):
         uploadData = message.content.split('successfully uploaded:')[1]
         uploadData = json.loads(uploadData)
         fileList[channelTranslator[message.channel.id]] += [uploadData]
-        #fileList is sometimes a list and sometimes dict, when it's a list it errors on above line. What's happening is that there is more than one var named fileList
         print("altered fileList")
         time.sleep(1)
         print("naptime!")
