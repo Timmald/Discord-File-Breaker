@@ -109,7 +109,8 @@ class DownloadPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
-        if not os.system(f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4:  # if certificates are already installed
+        if not os.system(
+                f"{userInfo['pythonPath']} {resource_path('Downloader.py')} query") == 4:  # if certificates are already installed
             with open(currentChoicesPath, 'r') as json_file:
                 fileList = json.load(json_file)
         else:  # if certs aren't installed, the app isn't going to work
@@ -188,19 +189,26 @@ if __name__ == "__main__":
     if isFirstTime:
         os.mkdir(AppSupportFolder)  # folder is made
         copyfile(resource_path('currentChoices.json'),
-                        f'{AppSupportFolder}/currentChoices.json')  # currentChoices is in folder
+                 f'{AppSupportFolder}/currentChoices.json')  # currentChoices is in folder
         with open(f'{AppSupportFolder}/userInfo.json', 'w') as info_writer:
-            userInfo = {
-                "pythonPath": '/usr/bin/python3.8',
-                "downloadsFolder": f'{homeDir}/Downloads',
-                "botChannel": 939234547906777139
-            }
+            if homeDir == '/Users/nathanwolf':
+                userInfo = {
+                    "pythonPath": '/usr/local/bin/python3.8',
+                    "downloadsFolder": f'{homeDir}/Downloads',
+                    "botChannel": 939234547906777139
+                }
+            else:
+                userInfo = {
+                    "pythonPath": '/usr/bin/python3.8',
+                    "downloadsFolder": f'{homeDir}/Downloads',
+                    "botChannel": 939234547906777139
+                }
             json.dump(userInfo, info_writer, indent=0)
-            # dump all the default values for stuff into the userInfo.json
-
-            # just a fun note, once u eliminate all the os.systems, the userInfo can just be a variable in one file that gets imported
+        # dump all the default values for stuff into the userInfo.json
+        # just a fun note, once u eliminate all the os.systems, the userInfo can just be a variable in one file that gets imported
+        os.mkdir(f'{AppSupportFolder}/filePieces')
     else:
-        with open(f'{AppSupportFolder}/userInfo.json','r') as info_reader:
+        with open(f'{AppSupportFolder}/userInfo.json', 'r') as info_reader:
             userInfo = json.load(info_reader)
     app = App()
     app.mainloop()
