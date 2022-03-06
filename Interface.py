@@ -60,9 +60,7 @@ class UploadPage(tk.Frame):
     @staticmethod
     def uploadFile():
         filename = filedialog.askopenfilename(title="Select file to upload:")
-        loop = aio.new_event_loop()
-        loop.run_until_complete(uploader(filename))
-        loop.close()
+        aio.run(uploader(filename))
 
     def __init__(self, parent, controller):
         tk, Frame.__init__(self, parent)
@@ -79,9 +77,7 @@ class DownloadPage(tk.Frame):
     def refreshList(self):
         for i in self.buttonList:
             i.pack_forget()
-        loop = aio.new_event_loop()
-        loop.run_until_complete(query())
-        loop.close()
+        aio.run(query())
         with open(currentChoicesPath, 'r') as json_file:
             fileList = json.load(json_file)
         self.buttonList = []
@@ -93,9 +89,7 @@ class DownloadPage(tk.Frame):
 
     @staticmethod
     def downloadFile(fileName: str, pieceNum):
-        loop = aio.new_event_loop()
-        loop.run_until_complete(download(fileName.replace(" ", "_"), pieceNum))
-        loop.close()
+        aio.run(download(fileName.replace(" ", "_"), pieceNum))
         filePieceFolderPath = f'{userInfo["downloadsFolder"]}/Discord File Pieces'
         filePieces = os.listdir(filePieceFolderPath)
         filePieces.sort()
@@ -115,9 +109,7 @@ class DownloadPage(tk.Frame):
         self.controller = controller
         label = tk.Label(self, text="Here's what you can download")
         try:
-            loop = aio.new_event_loop()
-            loop.run_until_complete(query())
-            loop.close()
+            aio.run(query())
             with open('currentChoices.json', 'r') as choices_reader:
                 fileList = json.load(choices_reader)
         except SSLCertVerificationError:
