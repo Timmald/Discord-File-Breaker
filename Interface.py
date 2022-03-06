@@ -5,7 +5,7 @@ from pathlib import Path
 from tkinter import filedialog
 from tkinter import *
 import sys
-import shutil
+from shutil import copyfile
 
 
 def resource_path(relative_path):
@@ -187,7 +187,7 @@ if __name__ == "__main__":
     isFirstTime = not os.path.exists(AppSupportFolder)
     if isFirstTime:
         os.mkdir(AppSupportFolder)  # folder is made
-        shutil.copyfile(resource_path('currentChoices.json'),
+        copyfile(resource_path('currentChoices.json'),
                         f'{AppSupportFolder}/currentChoices.json')  # currentChoices is in folder
         with open(f'{AppSupportFolder}/userInfo.json', 'w') as info_writer:
             userInfo = {
