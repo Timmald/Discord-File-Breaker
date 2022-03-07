@@ -86,7 +86,7 @@ class DownloadPage(Frame):
         label = Label(self, text="Here's what you can download")
         aio.run(query())
         self.buttonList = []
-        for file in fileList:
+        for file in GlobalVars.fileList:
             this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
             self.buttonList.append(this_button)
         label.pack(side="top", fill="x", pady=10)
@@ -145,5 +145,5 @@ if __name__ == "__main__":
         with open(userInfoPath, 'r') as info_reader:
             userInfo = json.load(info_reader)
         GlobalVars.botChannelID = userInfo["botChannel"]
-        app = App()
-        app.mainloop()
+    app = App()
+    app.mainloop()
