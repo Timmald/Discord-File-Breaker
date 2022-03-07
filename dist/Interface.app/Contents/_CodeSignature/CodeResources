@@ -6,11 +6,11 @@
 	<dict>
 		<key>Resources/Downloader.py</key>
 		<data>
-		JyHBFF3d47epFSs0jdUak/j7iKs=
+		V/8W10hQpZV/aa63mLETpACTEEs=
 		</data>
 		<key>Resources/GlobalVars.py</key>
 		<data>
-		LTqaYqWCOfG630wSI8tLhU/yoTQ=
+		qUDGwSDgjAXvEngzVAFB2u4l0kY=
 		</data>
 		<key>Resources/SplitFile.py</key>
 		<data>
@@ -24,9 +24,9 @@
 		<data>
 		PuEzqNK8E0grJhHhCe263+Qzugo=
 		</data>
-		<key>Resources/currentChoices.json</key>
+		<key>Resources/certifi/cacert.pem</key>
 		<data>
-		QFYqs6Q8t0Jd1zjt+WcMmR7Xt88=
+		2QSXZzbm2zxpwwTpYXIjQHgkIzE=
 		</data>
 		<key>Resources/icon-windowed.icns</key>
 		<data>
@@ -1366,10 +1366,10 @@
 			<key>symlink</key>
 			<string>../Resources/base_library.zip</string>
 		</dict>
-		<key>MacOS/currentChoices.json</key>
+		<key>MacOS/certifi</key>
 		<dict>
 			<key>symlink</key>
-			<string>../Resources/currentChoices.json</string>
+			<string>../Resources/certifi</string>
 		</dict>
 		<key>MacOS/lib-dynload/_asyncio.cpython-38-darwin.so</key>
 		<dict>
@@ -1912,14 +1912,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			sfPK/wkORMNwNSjjfHAgdZ6Vfxrd/xn3xJZ9//ImP9g=
+			fgbnNQ1kwVVFOqEsZhlRzclDfaOuR9WU7N5Q2hNMi4M=
 			</data>
 		</dict>
 		<key>Resources/GlobalVars.py</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			b4WDqkk/z4Bwei7fdrKkcTEf3fy9O5RfcIcdM38W4uQ=
+			OC9bq1+0/8nCQ0q6a0FhC3cpPf1vDTumRRRp0XPVPHk=
 			</data>
 		</dict>
 		<key>Resources/SplitFile.py</key>
@@ -1943,11 +1943,11 @@
 			vAb2tNSaI3zCzxazqiyuvlZqNtqak9WzK6k6l1aDY4w=
 			</data>
 		</dict>
-		<key>Resources/currentChoices.json</key>
+		<key>Resources/certifi/cacert.pem</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Tdfof9euv6OhUbVqdhPVMA7o52SdjGhHHGSp4dR0mWg=
+			+og4Keu4zSpgL5shwfhd4kz0eUnVILzrGCi0zRy2kGw=
 			</data>
 		</dict>
 		<key>Resources/icon-windowed.icns</key>
