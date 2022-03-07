@@ -7,7 +7,7 @@ import sys
 
 
 def installCerts():
-    STAT_0o775 = (stat.S_RUSR | stat.S_IWUSR | stat.S_IXUSR
+    STAT_0o775 = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
                   | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP
                   | stat.S_IROTH | stat.S_IXOTH)
 
@@ -34,3 +34,4 @@ def installCerts():
         print(" -- setting permissions")
         os.chmod(openssl_cafile, STAT_0o775)
         print(" -- update complete")
+    main()

@@ -6,7 +6,7 @@ import GlobalVars  # So I can modify globals
 from Downloader import query, download
 from GlobalVars import *  # So I can use globals
 from Uploader import uploader
-
+from installCerts import installCerts
 
 class App(Tk):
     def __init__(self, *args, **kwargs):
@@ -131,6 +131,7 @@ class SettingsPage(Frame):
 
 
 if __name__ == "__main__":
+    installCerts()
     isFirstTime = not os.path.exists(appSupportFolder)
     if isFirstTime:
         os.mkdir(appSupportFolder)  # folder is made
@@ -146,8 +147,6 @@ if __name__ == "__main__":
         with open(userInfoPath, 'w') as info_writer:
             json.dump(userInfo, info_writer, indent=0)
         os.mkdir(f'{appSupportFolder}/filePieces')
-        os.system("\"/Applications/Python 3.8/Install Certificates.command\"")
-        sys.exit()
     else:
         with open(userInfoPath, 'r') as info_reader:
             userInfo = json.load(info_reader)

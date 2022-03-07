@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-
 homeDir = str(Path.home())  # homeDir, for example, is /Users/nathanwolf
 appSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
 currentChoicesPath = f'{appSupportFolder}/currentChoices.json'
