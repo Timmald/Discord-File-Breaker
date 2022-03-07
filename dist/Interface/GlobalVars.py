@@ -13,9 +13,9 @@ if not os.path.exists(appSupport):
 currentChoicesPath = f'{appSupportFolder}/currentChoices.json'
 userInfoPath = f'{appSupportFolder}/userInfo.json'
 botChannelID = 939234547906777139
-try:
+if os.path.exists(currentChoicesPath):
     with open(currentChoicesPath, 'r') as json_file:
         fileList = json.load(json_file)
-except FileNotFoundError:
-    pass
+else:
+    fileList = []
 downloadsFolder = f'{homeDir}/Downloads'
