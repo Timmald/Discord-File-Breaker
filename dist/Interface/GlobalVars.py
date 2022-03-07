@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
 import os
-
 homeDir = str(Path.home())  # homeDir, for example, is /Users/nathanwolf
 appSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
+isFirstTime = not os.path.exists(appSupportFolder)
 libraryPath = f'{homeDir}/Library'
 if not os.path.exists(libraryPath):
     os.mkdir(libraryPath)
