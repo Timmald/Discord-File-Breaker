@@ -6,6 +6,5 @@ PyInstaller.__main__.run(pyi_args=[
     '--add-data=Uploader.py:.',
     '--add-data=Downloader.py:.',
     '--add-data=SplitFile.py:.',
-    '--add-data=currentChoices.json:.',
     '--add-data=GlobalVars.py:.'
 ])

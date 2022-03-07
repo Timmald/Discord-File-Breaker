@@ -3,8 +3,13 @@ from pathlib import Path
 import os
 
 homeDir = str(Path.home())  # homeDir, for example, is /Users/nathanwolf
-appSupportFolder = f'/Library/Application Support/FileBreakerApp'
-#TODO: This is the only apps upport folder everyone has, yet I don't have perms to write there I don't think?
+appSupportFolder = f'{homeDir}/Library/Application Support/FileBreakerApp'
+libraryPath = f'{homeDir}/Library'
+if not os.path.exists(libraryPath):
+    os.mkdir(libraryPath)
+appSupport = os.path.dirname(appSupportFolder)
+if not os.path.exists(appSupport):
+    os.mkdir(appSupport)
 currentChoicesPath = f'{appSupportFolder}/currentChoices.json'
 userInfoPath = f'{appSupportFolder}/userInfo.json'
 botChannelID = 939234547906777139

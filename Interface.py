@@ -131,15 +131,10 @@ class SettingsPage(Frame):
 
 
 if __name__ == "__main__":
-    installCerts()
     isFirstTime = not os.path.exists(appSupportFolder)
     if isFirstTime:
+        installCerts()
         os.mkdir(appSupportFolder)  # folder is made
-        internalCurrentChoices = os.path.join(os.path.dirname(sys.argv[0]), 'currentChoices.json')
-        with open(internalCurrentChoices,'r') as choices_reader:
-            choices = choices_reader.read()
-        with open(currentChoicesPath,'w') as choices_writer:
-            choices_writer.write(choices)
         userInfo = {
             "botChannel": 939234547906777139
         }

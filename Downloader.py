@@ -62,4 +62,6 @@ async def download(fileName, pieceNum):
                       f'{homeDir}/.Trash/{piece}')
     with open(f'{downloadsFolder}/{realFileName}', 'wb') as writer:
         writer.write(fileBytes)
+    #TODO: You know macs don't like modifying Downloads or probably trash from apps, you'll need to find how to do that
+    #the user is gonna have to give it Files and Folders permission on newer macs
     return
