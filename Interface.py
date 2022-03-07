@@ -131,7 +131,6 @@ class SettingsPage(Frame):
 
 
 if __name__ == "__main__":
-    isFirstTime = not os.path.exists(appSupportFolder)
     if isFirstTime:
         installCerts()
         os.mkdir(appSupportFolder)  # folder is made

@@ -18,6 +18,7 @@ def installCerts():
         print(" -- pip install --upgrade certifi")
         subprocess.check_call([sys.executable,
                                "-E", "-s", "-m", "pip", "install", "--upgrade", "certifi"])
+        #TODO: You can prob just user certifi.where() and hope it doesn't get updated any time soon if pip becomes issue
 
         import certifi
 
