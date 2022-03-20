@@ -11,8 +11,7 @@ def installCerts():
     STAT_0o775 = (stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
                   | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP
                   | stat.S_IROTH | stat.S_IXOTH)
-    cafile_dir, cafile = os.path.split(
-        ssl.get_default_verify_paths().cafile)
+    cafile = ssl.get_default_verify_paths().cafile
     # change working directory to the default SSL directory
     # os.chdir(cafile_dir)  # Error happens here
     # relpath_to_certifi_cafile = os.path.relpath(certifi.where())
