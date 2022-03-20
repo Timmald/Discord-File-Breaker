@@ -7,7 +7,7 @@ from Downloader import query, download
 from GlobalVars import *  # So I can use globals
 from Uploader import uploader
 from installCerts import installCerts
-
+import certifi
 
 class App(Tk):
     def __init__(self, *args, **kwargs):
@@ -143,6 +143,7 @@ if __name__ == "__main__":
             json.dump(userInfo, info_writer, indent=0)
         os.mkdir(f'{appSupportFolder}/filePieces')
     else:
+        os.environ["SSL_CERT_FILE"] = certifi.where()
         with open(userInfoPath, 'r') as info_reader:
             userInfo = json.load(info_reader)
         GlobalVars.botChannelID = userInfo["botChannel"]
