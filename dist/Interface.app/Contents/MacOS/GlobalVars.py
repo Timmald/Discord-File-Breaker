@@ -1,1 +1,0 @@
-../Resources/GlobalVars.py

@@ -4,22 +4,6 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Resources/Downloader.py</key>
-		<data>
-		V/8W10hQpZV/aa63mLETpACTEEs=
-		</data>
-		<key>Resources/GlobalVars.py</key>
-		<data>
-		cNSzE9xwDr4uUPppV+QzPy9bBAg=
-		</data>
-		<key>Resources/SplitFile.py</key>
-		<data>
-		AIJI8+YOeTqp/xTM/lu8+irpSo4=
-		</data>
-		<key>Resources/Uploader.py</key>
-		<data>
-		K40LOVJOa46ItpivL/QMOtfDPag=
-		</data>
 		<key>Resources/base_library.zip</key>
 		<data>
 		PuEzqNK8E0grJhHhCe263+Qzugo=
@@ -1287,16 +1271,6 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>MacOS/Downloader.py</key>
-		<dict>
-			<key>symlink</key>
-			<string>../Resources/Downloader.py</string>
-		</dict>
-		<key>MacOS/GlobalVars.py</key>
-		<dict>
-			<key>symlink</key>
-			<string>../Resources/GlobalVars.py</string>
-		</dict>
 		<key>MacOS/Python</key>
 		<dict>
 			<key>cdhash</key>
@@ -1305,16 +1279,6 @@
 			</data>
 			<key>requirement</key>
 			<string>cdhash H"42089014f0e8e8b72e31556eff220577cad9f290" or cdhash H"23887593299d93b850d394441873b631703f1de5"</string>
-		</dict>
-		<key>MacOS/SplitFile.py</key>
-		<dict>
-			<key>symlink</key>
-			<string>../Resources/SplitFile.py</string>
-		</dict>
-		<key>MacOS/Uploader.py</key>
-		<dict>
-			<key>symlink</key>
-			<string>../Resources/Uploader.py</string>
 		</dict>
 		<key>MacOS/aiohttp/_frozenlist.cpython-38-darwin.so</key>
 		<dict>
@@ -1907,34 +1871,6 @@
 			</data>
 			<key>requirement</key>
 			<string>cdhash H"e57b0195622d69b8d582db7345d7d76ffd4f1095" or cdhash H"c34fde3e3686e2b7db546270f3835c8fd87821fa"</string>
-		</dict>
-		<key>Resources/Downloader.py</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			fgbnNQ1kwVVFOqEsZhlRzclDfaOuR9WU7N5Q2hNMi4M=
-			</data>
-		</dict>
-		<key>Resources/GlobalVars.py</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			Tow9JA8OKg+0a1No6+9XQ7+upIdpf2BAVzBmKGGreuM=
-			</data>
-		</dict>
-		<key>Resources/SplitFile.py</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			86ZIbK8SlElET3eI2q+8b2ab7w+VRU8FUcQJjhCAIOo=
-			</data>
-		</dict>
-		<key>Resources/Uploader.py</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			HHh9Sg0OGZiPTeesnXsno0lNHNS6e/mkDYI/4HG2Iz0=
-			</data>
 		</dict>
 		<key>Resources/base_library.zip</key>
 		<dict>
