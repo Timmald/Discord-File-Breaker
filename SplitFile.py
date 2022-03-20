@@ -1,6 +1,8 @@
 import datetime
 import os
 from datetime import datetime
+from math import ceil
+
 from GlobalVars import *
 
 
@@ -19,10 +21,10 @@ class SplitFile:
         with open(self.path, 'rb') as byte_reader:
             bytesboi = byte_reader.read()
             filePieceList = []
-            for i in range(int(len(bytesboi) / 8000000)):
+            for i in range(ceil(len(bytesboi) / 8000000)):
                 # TODO: change above line so it allows small files to upload
-                filePieceList += [bytesboi[8000000 * i:8000000 * (i + 1)]]
-            filePieceList += [bytesboi[8000000 * (i + 1):]]
+                endIndexNum = 8000000 * (i + 1) if not 8000000 * (i + 1) > len(bytesboi) else len(bytesboi)
+                filePieceList.append(bytesboi[8000000 * i:endIndexNum])
             return filePieceList
 
     def writeSplitFile(self):
