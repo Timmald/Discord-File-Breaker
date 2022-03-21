@@ -28,26 +28,30 @@ async def query():
     return
 
 
-async def download(fileName, pieceNum):
+async def download(fileName):
     client = discord.Client()
     filePieceFolder = f'{downloadsFolder}/Discord File Pieces'
+    masterID = 937444289208778782
 
     @client.event
     async def on_ready():
         print('yo')
         botChannel = await client.fetch_channel(botChannelID)
-        fileData = fileName.split(';_Uploaded_at_')
-        fileData[1] = datetime.strptime(fileData[1].replace('_', ' '), '%c')
-        pieceNames = [f'{fileData[0]} piece {i}.txt'.replace(' ', '_') for i in range(1, pieceNum + 1)]
-        # oh how I wish we could stick to underscores
-        async for message in botChannel.history(around=fileData[1]):
-            if len(message.attachments) == 1:
-                if message.attachments[0].filename in pieceNames:
+        await botChannel.send(f'$messageIDs {fileName}')
+
+    @client.event
+    async def on_message(message):
+        if not message.author == client.user:
+            isMaster = message.author.id == masterID
+            if isMaster:
+                message_ids = json.loads(message.content)
+                for id in message_ids:
+                    this_message = await message.channel.fetch_message(id)
                     if not os.path.exists(filePieceFolder):
                         os.mkdir(filePieceFolder)
-                    await message.attachments[0].save(
-                        f'{filePieceFolder}/{message.attachments[0].filename}')
-        await client.close()
+                    await this_message.attachments[0].save(
+                        f'{filePieceFolder}/{this_message.attachments[0].filename}')
+            await client.close()
 
     await client.start('OTI2NjE1OTIyOTA5Nzc3OTgw.Yc-QUw.AjoWXPgpw2HsrwEPTEaJcs2F8q8')
     filePieces = os.listdir(filePieceFolder)
@@ -62,6 +66,6 @@ async def download(fileName, pieceNum):
                       f'{homeDir}/.Trash/{piece}')
     with open(f'{downloadsFolder}/{realFileName}', 'wb') as writer:
         writer.write(fileBytes)
-    #TODO: You know macs don't like modifying Downloads or probably trash from apps, you'll need to find how to do that
-    #the user is gonna have to give it Files and Folders permission on newer macs
+    # TODO: You know macs don't like modifying Downloads or probably trash from apps, you'll need to find how to do that
+    # the user is gonna have to give it Files and Folders permission on newer macs (or full disk access)
     return
