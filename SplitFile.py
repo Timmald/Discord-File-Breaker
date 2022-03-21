@@ -19,7 +19,6 @@ class SplitFile:
             bytesboi = byte_reader.read()
             filePieceList = []
             for i in range(ceil(len(bytesboi) / 8000000)):
-                # TODO: change above line so it allows small files to upload
                 endIndexNum = 8000000 * (i + 1) if not 8000000 * (i + 1) > len(bytesboi) else len(bytesboi)
                 filePieceList.append(bytesboi[8000000 * i:endIndexNum])
             return filePieceList
