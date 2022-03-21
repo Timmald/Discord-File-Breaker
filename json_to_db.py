@@ -1,0 +1,43 @@
+import json
+import sqlite3
+
+
+def get_db_connection():
+    return sqlite3.connect('filePieces.sqlite')
+
+
+with open('filePieces.json', 'r') as json_reader:
+    filePieces = json.load(json_reader)
+
+filePiecesSum = filePieces["Test"] + filePieces["Nick's"]
+conn = get_db_connection()
+conn.execute(
+    'CREATE TABLE File_Pieces (file_name text, upload_time text, num_pieces int, server_name text, id integer primary key autoincrement)')
+for file in filePiecesSum:
+    isNicks = filePiecesSum.index(file) >= len(filePieces["Test"])
+    serverName = "Nick's" if isNicks else "Test"
+    nameDate = file[0]
+    name, date = nameDate.split('; Uploaded at ')
+    numPieces = file[1]
+    conn.execute(f'INSERT INTO File_Pieces (file_name, upload_time, num_pieces, server_name) VALUES (?, ?, ?, ?)',
+                 (name, date, numPieces, serverName))
+conn.commit()
+conn.close()
+# for file in testServerFiles:
+#    conn = get_db_connection()
+#    cur = conn.cursor()
+#    nameDate = file[0]
+#    name, date = nameDate.split('; Uploaded at ')
+#    numPieces = file[1]
+#    conn.execute(f'INSERT INTO Test_Server_Files (file_name, upload_time, num_pieces) VALUES (?, ?, ?)', (name, date, numPieces))
+#    conn.commit()
+#    conn.close()
+# for file in nickServerFiles:
+#    conn = get_db_connection()
+#    cur = conn.cursor()
+#    nameDate = file[0]
+#    name, date = nameDate.split('; Uploaded at ')
+#    numPieces = file[1]
+#    conn.execute(f'INSERT INTO "Nick\'s_Server_Files" (file_name, upload_time, num_pieces) VALUES (?, ?, ?)', (name, date, numPieces))
+#    conn.commit()
+#    conn.close()

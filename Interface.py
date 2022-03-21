@@ -5,7 +5,7 @@ from tkinter.filedialog import askopenfilename
 import GlobalVars  # So I can modify globals
 from Downloader import query, download
 from GlobalVars import *  # So I can use globals
-from Uploader import uploader
+from Uploader import upload
 from installCerts import installCerts
 import certifi
 
@@ -52,7 +52,7 @@ class UploadPage(Frame):
     @staticmethod
     def uploadFile():
         filename = askopenfilename(title="Select file to upload:")
-        aio.run(uploader(filename))
+        aio.run(upload(filename))
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -72,14 +72,14 @@ class DownloadPage(Frame):
         aio.run(query())
         self.buttonList = []
         for file in GlobalVars.fileList:
-            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
+            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0]))
             self.buttonList += [this_button]
         for button in self.buttonList:
             button.pack()
 
     @staticmethod
-    def downloadFile(fileName: str, pieceNum):
-        aio.run(download(fileName.replace(" ", "_"), pieceNum))
+    def downloadFile(fileName: str):
+        aio.run(download(fileName.replace(" ", "_")))
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -88,7 +88,7 @@ class DownloadPage(Frame):
         aio.run(query())
         self.buttonList = []
         for file in GlobalVars.fileList:
-            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0], file[1]))
+            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0]))
             self.buttonList.append(this_button)
         label.pack(side="top", fill="x", pady=10)
         for button in self.buttonList:
