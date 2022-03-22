@@ -42,3 +42,4 @@ conn.close()
 #    conn.commit()
 #    conn.close()
 # TODO: Make all filenames have underscores
+# TODO: remove piece_num
