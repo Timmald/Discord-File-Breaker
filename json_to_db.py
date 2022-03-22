@@ -41,3 +41,4 @@ conn.close()
 #    conn.execute(f'INSERT INTO "Nick\'s_Server_Files" (file_name, upload_time, num_pieces) VALUES (?, ?, ?)', (name, date, numPieces))
 #    conn.commit()
 #    conn.close()
+# TODO: Make all filenames have underscores

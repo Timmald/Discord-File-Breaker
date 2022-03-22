@@ -40,6 +40,8 @@ async def on_message(message):
         # get this list of rows into a meaningful form
         downloadable = [[f'{file["file_name"]}; Uploaded at {file["upload_time"]}', file['num_pieces']] for file in
                         downloadable]
+        #TODO: List of dicts
+        # TODO: No more uploaded at
         await message.channel.send(json.dumps(downloadable, indent=0).replace('\'', '\"'))
         conn.close()
     elif message.channel in botChannels and message.author.id == 926615922909777980 and len(
@@ -47,6 +49,7 @@ async def on_message(message):
         uploadData = message.content.split('successfully uploaded:')[1]
         uploadData = json.loads(uploadData)
         name, date = uploadData[0].split('; Uploaded at ')
+        # TODO: No more uploaded at, all this data is gonna be different
         pieceNum = uploadData[1]
         serverName = channelTranslator[message.channel.id]
         messageIDs = uploadData[2]
@@ -64,11 +67,13 @@ async def on_message(message):
             message.attachments) == 0 and message.content.startswith('$messageIDs'):
         fileName = message.content.split(' ')[1].split(';_Uploaded_at_')[0]
         fileDate = message.content.split(' ')[1].split(';_Uploaded_at_')[1].replace('_', ' ')
+        # TODO: without uploaded at, the date won't have underscores because it will be separate from the name
+        # TODO: No more uploaded at, all this data is gonna be different
         conn = get_db_connection()
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
         dbID = cur.execute(f'SELECT id FROM File_Pieces WHERE file_name=:fileName AND upload_time=:fileDate',
-                           {"fileName": fileName.replace("_", " "),
+                           {"fileName": fileName,
                             "fileDate": fileDate}).fetchone()['id']
         messageIDs = [i['message_id'] for i in
                       cur.execute(f'SELECT message_id FROM Message_ids WHERE file_id=:dbID', {"dbID": dbID}).fetchall()]

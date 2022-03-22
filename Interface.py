@@ -9,6 +9,7 @@ from Uploader import upload
 from installCerts import installCerts
 import certifi
 
+
 class App(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
@@ -51,7 +52,7 @@ class StartPage(Frame):
 class UploadPage(Frame):
     @staticmethod
     def uploadFile():
-        filename = askopenfilename(title="Select file to upload:")
+        filename = askopenfilename(title="Select file to upload:").replace(' ', '_')
         aio.run(upload(filename))
 
     def __init__(self, parent, controller):
@@ -66,6 +67,7 @@ class UploadPage(Frame):
 
 
 class DownloadPage(Frame):
+    # TODO: Make a function to generate the button names now that name and date are separate
     def refreshList(self):
         for i in self.buttonList:
             i.pack_forget()

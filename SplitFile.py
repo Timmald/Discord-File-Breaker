@@ -36,6 +36,7 @@ class SplitFile:
         return json.dumps(
             [f'{self.name}; Uploaded at {datetime.now().strftime("%c")}',
              len(self.chunks), self.messageIDs])
+        #TODO: No more uploaded at, also make it a dict for the love of god
 
     def set_message_ids(self, ids):
         self.messageIDs = ids
