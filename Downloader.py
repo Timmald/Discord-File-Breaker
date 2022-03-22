@@ -18,10 +18,13 @@ async def query():
     async def on_message(message):
         isMaster = message.author.id == masterID
         if isMaster:  # then it must be the downloadList
-            downloadChoices = message.content
-            GlobalVars.fileList = json.loads(downloadChoices)
-            with open(currentChoicesPath, 'w') as json_file:
-                json.dump(fileList, json_file, indent=0)
+            try:
+                downloadChoices = message.content
+                GlobalVars.fileList = json.loads(downloadChoices)
+                with open(currentChoicesPath, 'w') as json_file:
+                    json.dump(fileList, json_file, indent=0)
+            except Exception as e:
+                await message.channel.send(f'Download list query failed because: \n```python\n{str(e)}```')
             await client.close()
 
     await client.start('OTI2NjE1OTIyOTA5Nzc3OTgw.Yc-QUw.AjoWXPgpw2HsrwEPTEaJcs2F8q8')
@@ -35,8 +38,8 @@ async def download(fileName):
 
     @client.event
     async def on_ready():
-        print('yo')
         botChannel = await client.fetch_channel(botChannelID)
+        await botChannel.send("It's downloadin' time!")
         await botChannel.send(f'$messageIDs {fileName}')
 
     @client.event
@@ -44,13 +47,20 @@ async def download(fileName):
         if not message.author == client.user:
             isMaster = message.author.id == masterID
             if isMaster:
-                message_ids = json.loads(message.content)
-                for id in message_ids:
-                    this_message = await message.channel.fetch_message(id)
-                    if not os.path.exists(filePieceFolder):
-                        os.mkdir(filePieceFolder)
-                    await this_message.attachments[0].save(
-                        f'{filePieceFolder}/{this_message.attachments[0].filename}')
+                try:
+                    message_ids = json.loads(message.content)
+                    fileNum = len(message_ids)
+                    progress = 0
+                    for id in message_ids:
+                        this_message = await message.channel.fetch_message(id)
+                        if not os.path.exists(filePieceFolder):
+                            os.mkdir(filePieceFolder)
+                        await this_message.attachments[0].save(
+                            f'{filePieceFolder}/{this_message.attachments[0].filename}')
+                        await message.channel.send(f'{fileName} {round(progress/fileNum)}% Downloaded')
+                    await message.channel.send(f'Downloaded {fileName}')
+                except Exception as e:
+                    await message.channel.send(f'DOWNLOAD FAILED! It has been stopped. Why did it fail? \n```python\n{str(e)}```')
             await client.close()
 
     await client.start('OTI2NjE1OTIyOTA5Nzc3OTgw.Yc-QUw.AjoWXPgpw2HsrwEPTEaJcs2F8q8')
