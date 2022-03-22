@@ -8,11 +8,7 @@ def get_db_connection():
 
 conn = get_db_connection()
 conn.row_factory = sqlite3.Row
-filePieces = conn.execute('SELECT * FROM File_Pieces').fetchall()
-for entry in filePieces:
-    conn.execute('UPDATE File_Pieces SET file_name = ? WHERE id = ?', (entry['file_name'].replace(' ', '_'), entry['id']))
-    conn.commit()
-conn.close()
+conn.execute('ALTER TABLE File_Pieces DROP COLUMN')
 
 # with open('filePieces.json', 'r') as json_reader:
 #     filePieces = json.load(json_reader)
