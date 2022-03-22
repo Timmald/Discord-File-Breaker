@@ -9,6 +9,7 @@ from Uploader import upload
 from installCerts import installCerts
 import certifi
 
+
 class App(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
@@ -66,33 +67,27 @@ class UploadPage(Frame):
 
 
 class DownloadPage(Frame):
-    def refreshList(self):
-        for i in self.buttonList:
-            i.pack_forget()
+    def generateButtons(self):
         aio.run(query())
         self.buttonList = []
         for file in GlobalVars.fileList:
-            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0]))
+            buttonName = f'{file["fileName"]}; Uploaded at {file["uploadDate"]}'
+            this_button = Button(self, text=buttonName, command=lambda: aio.run(download(file["fileName"])))
             self.buttonList += [this_button]
         for button in self.buttonList:
             button.pack()
 
-    @staticmethod
-    def downloadFile(fileName: str):
-        aio.run(download(fileName.replace(" ", "_")))
+    def refreshList(self):
+        for i in self.buttonList:
+            i.pack_forget()
+        self.generateButtons()
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
         label = Label(self, text="Here's what you can download")
-        aio.run(query())
-        self.buttonList = []
-        for file in GlobalVars.fileList:
-            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0]))
-            self.buttonList.append(this_button)
         label.pack(side="top", fill="x", pady=10)
-        for button in self.buttonList:
-            button.pack()
+        self.generateButtons()
         back_button = Button(self, text="<-", command=lambda: controller.show_frame("StartPage"))
         back_button.pack()
 
