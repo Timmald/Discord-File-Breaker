@@ -71,8 +71,6 @@ async def on_message(message):
     #         message.attachments) == 0 and message.content.startswith('$messageIDs'):
     #     fileName = message.content.split(' ')[1].split(';_Uploaded_at_')[0]
     #     fileDate = message.content.split(' ')[1].split(';_Uploaded_at_')[1].replace('_', ' ')
-    #     # TODO: without uploaded at, the date won't have underscores because it will be separate from the name
-    #     # TODO: No more uploaded at, all this data is gonna be different
     #     conn = get_db_connection()
     #     conn.row_factory = sqlite3.Row
     #     cur = conn.cursor()

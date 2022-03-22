@@ -67,21 +67,17 @@ class UploadPage(Frame):
 
 
 class DownloadPage(Frame):
-    # TODO: Make a function to generate the button names now that name and date are separate
     def refreshList(self):
         for i in self.buttonList:
             i.pack_forget()
         aio.run(query())
         self.buttonList = []
         for file in GlobalVars.fileList:
-            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0]))
+            buttonName = f'{file["fileName"]}; Uploaded at {file["uploadDate"]}'
+            this_button = Button(self, text=buttonName, command=lambda: self.downloadFile(file[0]))
             self.buttonList += [this_button]
         for button in self.buttonList:
             button.pack()
-
-    @staticmethod
-    def downloadFile(fileName: str):
-        aio.run(download(fileName.replace(" ", "_")))
 
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
@@ -90,7 +86,7 @@ class DownloadPage(Frame):
         aio.run(query())
         self.buttonList = []
         for file in GlobalVars.fileList:
-            this_button = Button(self, text=file[0], command=lambda: self.downloadFile(file[0]))
+            this_button = Button(self, text=file[0], command=lambda: aio.run(download(file['fileName'])))
             self.buttonList.append(this_button)
         label.pack(side="top", fill="x", pady=10)
         for button in self.buttonList:
