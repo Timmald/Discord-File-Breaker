@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import discord
 from GlobalVars import *
 from SplitFile import SplitFile
@@ -20,7 +22,12 @@ async def upload(filePath):
                 message = await botChannel.send(file=fileObj)
                 messageIDs.append(message.id)
             file.set_message_ids(messageIDs)
-            await botChannel.send(f'successfully uploaded:{file.fullName()}')
+            uploadData = {
+                "fileName": file.name,
+                "uploadDate": datetime.now().strftime("%c"),
+                "messageIDs": file.messageIDs
+            }
+            await botChannel.send(f'successfully uploaded:{json.dumps(uploadData)}')
         except Exception as e:
             await botChannel.send(f'UPLOAD FAILED! Error message: \n```python\n{str(e)}```')
         await client.close()

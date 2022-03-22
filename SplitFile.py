@@ -9,7 +9,7 @@ from GlobalVars import *
 class SplitFile:
     def __init__(self, path: os.PathLike):
         self.path = path
-        self.name = os.path.basename(path)
+        self.name = os.path.basename(path).replace(' ', '_')
         self.chunks = self.splitFile()
         self.writeSplitFile()
         self.chunkNames = [f'{self.name} piece #{i + 1}.txt' for i in range(len(self.chunks))]
@@ -31,12 +31,6 @@ class SplitFile:
                     'wb') as txt:
                 txt.write(i)
             index += 1
-
-    def fullName(self):
-        return json.dumps(
-            [f'{self.name}; Uploaded at {datetime.now().strftime("%c")}',
-             len(self.chunks), self.messageIDs])
-        #TODO: No more uploaded at, also make it a dict for the love of god
 
     def set_message_ids(self, ids):
         self.messageIDs = ids
