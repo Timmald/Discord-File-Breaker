@@ -67,19 +67,6 @@ async def on_message(message):
             conn.execute('INSERT INTO Message_ids (message_id, file_id) VALUES (?, ?)', (id, current_id))
         conn.commit()
         conn.close()
-    # elif message.channel in botChannels and message.author.id == 926615922909777980 and len(
-    #         message.attachments) == 0 and message.content.startswith('$messageIDs'):
-    #     fileName = message.content.split(' ')[1].split(';_Uploaded_at_')[0]
-    #     fileDate = message.content.split(' ')[1].split(';_Uploaded_at_')[1].replace('_', ' ')
-    #     conn = get_db_connection()
-    #     conn.row_factory = sqlite3.Row
-    #     cur = conn.cursor()
-    #     dbID = cur.execute(f'SELECT id FROM File_Pieces WHERE file_name=:fileName AND upload_time=:fileDate',
-    #                        {"fileName": fileName,
-    #                         "fileDate": fileDate}).fetchone()['id']
-    #     messageIDs = [i['message_id'] for i in
-    #                   cur.execute(f'SELECT message_id FROM Message_ids WHERE file_id=:dbID', {"dbID": dbID}).fetchall()]
-    #     await message.channel.send(json.dumps(messageIDs))
 
 
 client.run('OTM3NDQ0Mjg5MjA4Nzc4Nzgy.Yfb1Bw.ch8l2TGIJWvu_4z5MV1WP0owToo')
