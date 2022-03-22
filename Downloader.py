@@ -41,7 +41,7 @@ async def download(fileName):
         try:
             botChannel = await client.fetch_channel(botChannelID)
             await botChannel.send("It's downloadin' time!")
-            targetFile = [i for i in fileList if i['fileName'] == fileName][0]
+            targetFile = [i for i in GlobalVars.fileList if i['fileName'] == fileName][0]
             message_ids = targetFile['messageIDs']
             fileNum = len(message_ids)
             progress = 0

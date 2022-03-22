@@ -53,7 +53,7 @@ async def on_message(message):
         conn.close()
     elif message.channel in botChannels and message.author.id == 926615922909777980 and len(
             message.attachments) == 0 and message.content.startswith('successfully uploaded'):
-        uploadData = message.content.split(':')[1]
+        uploadData = message.content.split('successfully uploaded:')[1]
         uploadData = json.loads(uploadData)
         name, date, messageIDs = uploadData["fileName"], uploadData["uploadDate"], uploadData["messageIDs"]
         serverName = channelTranslator[message.channel.id]
