@@ -11,24 +11,46 @@ import certifi
 
 
 class App(Tk):
+    """
+    The interface of the app.
+    It instantiates the window,
+    and also fills the dict ``frames`` with all of the pages of the app for easy referncing and manipulation later.
+    FYI, class ``Tk`` represents a ``tkinter`` app
+    """
     def __init__(self, *args, **kwargs):
-        Tk.__init__(self, *args, **kwargs)
-        self.container = Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        """
+        Called at the bottom of the file when ``app`` is instantiated
+
+        I got most of this one from StackOverflow btw
+        """
+        Tk.__init__(self, *args, **kwargs)  # Inheritance! Instantiate a tkinter app
+        self.container = Frame(self)  # This frame holds every other element in the app
+        self.container.pack(side="top", fill="both", expand=True)  # the frame has now been placed in the window
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
+        # Are these last two lines important? Probably
         self.title('Discord FileBreaker')
+        # Now the blank window has been configured. time to get interesting!
         self.frames = {}
         for F in (StartPage, UploadPage, DownloadPage, AboutPage, SettingsPage):
-            page_name = F.__name__
-            frame = F(parent=self.container, controller=self)
-            self.frames[page_name] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame("StartPage")
+            # Confusing, right? Well, in python, classes can be treated like variables.
+            # Crazy, I know. So this just applies those things to all of those classes in the tuple
+            # Each class in the tuple is a page of the app
+            page_name = F.__name__  # Name of page should be name of class
+            frame = F(parent=self.container, controller=self)  # Calls the constructor of class F, because they all take the same params
+            self.frames[page_name] = frame  # Store tha page object so it can be accessed with its page name. Smort.
+            frame.grid(row=0, column=0, sticky="nsew")  # place the page in the app
+        self.show_frame("StartPage")  # Show the starting page
 
     def show_frame(self, page_name):
-        frame = self.frames[page_name]
-        frame.tkraise()
+        """
+        Raises the indicated page to the top of the pile such that the user can navigate to it
+
+        :param page_name: The key of the page you want to navigate to (the name of the class of that page)
+        """
+        frame = self.frames[page_name]  # Get the desired page from the dictionary with the pages
+        frame.tkraise()  # raise it above all the other pages so it can be interacted with
+        # IMPORTANT: The pages aren't brought to life separately. They all exist at once, just stacked on top of each other. This method brings whichever one you want to the top to give the appearance of birthing it.
 
 
 class StartPage(Frame):
@@ -127,20 +149,30 @@ class SettingsPage(Frame):
 
 
 if __name__ == "__main__":
+    # This is where the app starts
     if isFirstTime:
-        installCerts()
-        os.mkdir(appSupportFolder)  # folder is made
+        # if the application support folder doesn't exist, we assume it's the first time you're using the app
+        installCerts()  # go over to installCerts.py to see what that does
+        os.mkdir(appSupportFolder)  # creates /Library/Application Support/FileBreakerApp
         userInfo = {
-            "botChannel": 939234547906777139
+            "botChannel": 939234547906777139  # default is bot channel ID for the test server
         }
-        GlobalVars.botChannelID = userInfo["botChannel"]
+        # TODO: this can be one variable, also default to nick's in future versions
+        GlobalVars.botChannelID = userInfo["botChannel"]  # modify runtime record of botChannelID
         with open(userInfoPath, 'w') as info_writer:
             json.dump(userInfo, info_writer, indent=0)
+        # saves the botChannelID for future openings of the app
+        # TODO: Rename the file and maybe just make it a txt file because it holds one thing
         os.mkdir(f'{appSupportFolder}/filePieces')
+        # this folder stores chunks that get uploaded to discord
     else:
-        os.environ["SSL_CERT_FILE"] = certifi.where()
+        # this code runs most of the time, assuming this isn't their first time opening the app
+        os.environ["SSL_CERT_FILE"] = certifi.where()  # this environment variable has to be set so that when the SSL certificates are getting verified, it knows to look at certifi.where()
+        # certifi.where() is where the imported SSL certs are stored
         with open(userInfoPath, 'r') as info_reader:
             userInfo = json.load(info_reader)
         GlobalVars.botChannelID = userInfo["botChannel"]
-    app = App()
-    app.mainloop()
+        # If it isn't their first opening, there is already a default botChannel ID saved, so read that and set the runtime record of it
+    app = App()  # Documentation on top of file
+    # the app class creates instances of all the pages of the app, basically
+    app.mainloop()  # This runs the entire time the app is open. It is the main process that calls all the other functions as the user does stuff.
